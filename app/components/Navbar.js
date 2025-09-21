@@ -1,24 +1,74 @@
-import React from 'react'
-import Link from 'next/link' 
+"use client";
+import React, { useState } from "react";
+import Link from "next/link";
+import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
+
 
 const Navbar = () => {
-  return (
-    <nav className='h-16 flex items-center justify-between bg-purple-700 px-3 text-white'>
-        <div className='logo font-bold text-2xl'>
-             <Link href="/"><li>BitLinks</li></Link>
-        </div>
-        <ul className='flex items-center gap-4 justify-center'>
-            <Link href="/"><li>Home</li></Link>
-            <Link href="/about"><li>About</li></Link>
-            <Link href="/shorten"><li>Shorten</li></Link>
-            <Link href="/contact"><li>Contact Us</li></Link>
-            <li className='flex gap-3'>
-                <Link href="/shorten"><button className='bg-purple-500 rounded-lg shadow-lg p-3 py-1 font-bold'>Try Now</button></Link>
-                <Link href="/github"><button className='bg-purple-500 rounded-lg shadow-lg p-3 py-1 font-bold'>GitHub</button></Link>
-            </li>
-        </ul>
-    </nav>
-  )
-}
+  const [isOpen, setIsOpen] = useState(false);
 
-export default Navbar
+  const toggleMenu = () => setIsOpen(!isOpen);
+  const closeMenu = () => setIsOpen(false);
+
+  return (
+    <nav className="bg-purple-700 text-white px-4 py-3 w-full z-50 shadow-md">
+      <div className="max-w-7xl mx-auto flex justify-between items-center">
+        {/* Logo */}
+        <div className="text-2xl font-bold">
+          <Link href="/" onClick={closeMenu}>BitLinks</Link>
+        </div>
+
+        {/* Desktop Menu */}
+        <ul className="hidden md:flex items-center gap-4">
+          <Link href="/" onClick={closeMenu}><li className="hover:text-gray-200 cursor-pointer">Home</li></Link>
+          <Link href="/about" onClick={closeMenu}><li className="hover:text-gray-200 cursor-pointer">About</li></Link>
+          <Link href="/shorten" onClick={closeMenu}><li className="hover:text-gray-200 cursor-pointer">Shorten</li></Link>
+          <Link href="/contact" onClick={closeMenu}><li className="hover:text-gray-200 cursor-pointer">Contact Us</li></Link>
+          <li className="flex gap-3">
+            <Link href="/shorten" onClick={closeMenu}>
+              <button className="bg-purple-500 rounded-lg shadow-lg px-4 py-1 font-bold hover:bg-purple-600 transition">
+                Try Now
+              </button>
+            </Link>
+            <Link href="/github" onClick={closeMenu}>
+              <button className="bg-purple-500 rounded-lg shadow-lg px-4 py-1 font-bold hover:bg-purple-600 transition">
+                GitHub
+              </button>
+            </Link>
+          </li>
+        </ul>
+
+        {/* Hamburger Icon */}
+        <div className="md:hidden flex items-center">
+          <button onClick={toggleMenu} className="focus:outline-none">
+            {isOpen ? <XMarkIcon className="w-6 h-6" /> : <Bars3Icon className="w-6 h-6" />}
+          </button>
+        </div>
+      </div>
+
+      {/* Mobile Menu */}
+      {isOpen && (
+        <div className="md:hidden bg-purple-600 mt-2 rounded-lg shadow-lg flex flex-col gap-2 p-4">
+          <Link href="/" onClick={closeMenu}><li className="hover:text-gray-200 cursor-pointer">Home</li></Link>
+          <Link href="/about" onClick={closeMenu}><li className="hover:text-gray-200 cursor-pointer">About</li></Link>
+          <Link href="/shorten" onClick={closeMenu}><li className="hover:text-gray-200 cursor-pointer">Shorten</li></Link>
+          <Link href="/contact" onClick={closeMenu}><li className="hover:text-gray-200 cursor-pointer">Contact Us</li></Link>
+          <div className="flex gap-3 mt-2">
+            <Link href="/shorten" onClick={closeMenu}>
+              <button className="bg-purple-500 rounded-lg shadow-lg px-4 py-1 font-bold hover:bg-purple-600 transition">
+                Try Now
+              </button>
+            </Link>
+            <Link href="/github" onClick={closeMenu}>
+              <button className="bg-purple-500 rounded-lg shadow-lg px-4 py-1 font-bold hover:bg-purple-600 transition">
+                GitHub
+              </button>
+            </Link>
+          </div>
+        </div>
+      )}
+    </nav>
+  );
+};
+
+export default Navbar;
