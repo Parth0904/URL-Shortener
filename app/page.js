@@ -11,7 +11,7 @@ export default function Home() {
             The best place to shorten your links
           </p>
           <p className="text-gray-700 md:text-lg px-4 md:px-0">
-            We are the most straightforward URL shortener in the world. You do not even need to create an account. We understand how important it is for you to have a simple and easy way to share your links with others.
+            We are the most straightforward URL shortener in the world. You don&apos;t even need to create an account. We understand how important it is for you to have a simple and easy way to share your links with others.
           </p>
           <div className="flex gap-4 mt-4 justify-center md:justify-start">
             <Link href="/shorten">
@@ -33,7 +33,7 @@ export default function Home() {
             className="mix-blend-darken object-contain"
             src="/vector.jpg"
             alt="an image of a vector"
-            fill={true}
+            fill
           />
         </div>
       </section>
