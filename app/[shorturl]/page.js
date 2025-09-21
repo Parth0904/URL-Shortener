@@ -1,23 +1,22 @@
 import { redirect } from "next/navigation"
 import clientPromise from "@/lib/mongodb"
 
+
 export default async function Page({ params }) {
-  const { shorturl } = params  // <-- correct destructuring
+    const shorturl = (await params).shorturl
 
-  const client = await clientPromise;
-  const db = client.db("bitlinks");
-  const collection = db.collection("url");
+    const client = await clientPromise;
+    const db = client.db("bitlinks")
+    const collection = db.collection("url")
 
-  const existing = await collection.findOne({ shorturl: shorturl });
+    const doc = await collection.findOne({shorturl: shorturl})
+    console.log(doc)
+    if(doc){
+         redirect(doc.url)
+    }
+    else{
+        redirect(`${process.env.NEXT_PUBLIC_HOST}`)
+    }
 
-  if (existing) {
-    // Redirect to the original URL
-    redirect(existing.url)
-  } else {
-    // Redirect to home if short URL not found
-    redirect(`${process.env.NEXT_PUBLIC_HOST}`)
+    return <div>My Post: {url}</div>
   }
-
-  // This line is never reached because redirect() ends execution
-  return null;
-}

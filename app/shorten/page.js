@@ -1,24 +1,21 @@
 "use client"
-import React, { useState } from 'react'
 import Link from 'next/link'
+import React, { useState } from 'react'
 
 const Shorten = () => {
-    const [url, setUrl] = useState("")
-    const [shorturl, setShorturl] = useState("")
+    const [url, seturl] = useState("")
+    const [shorturl, setshorturl] = useState("")
     const [generated, setGenerated] = useState("")
+    const [isGenerating, setIsGenerating] = useState(false)   // ✅ new state
 
     const generate = () => {
-        if (!url || !shorturl) {
-            alert("Please fill both fields!")
-            return
-        }
-
+        setIsGenerating(true)                                // ✅ start loading
         const myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
 
         const raw = JSON.stringify({
-            url: url,
-            shorturl: shorturl
+            "url": url,
+            "shorturl": shorturl
         });
 
         const requestOptions = {
@@ -31,53 +28,46 @@ const Shorten = () => {
         fetch("/api/generate", requestOptions)
             .then((response) => response.json())
             .then((result) => {
+                setGenerated(`${process.env.NEXT_PUBLIC_HOST}/${shorturl}`)
+                seturl("")   
+                setshorturl("")
                 console.log(result)
                 alert(result.message)
-                if (result.success) {
-                    setGenerated(`${process.env.NEXT_PUBLIC_HOST}/${shorturl}`)
-                    setUrl("")
-                    setShorturl("")
-                }
             })
             .catch((error) => console.error(error));
     }
 
     return (
-        <div className='flex flex-col gap-4 mx-auto max-w-lg bg-purple-100 my-16 p-8 rounded-lg'>
-            <h1 className='text-2xl font-bold'>Generate your short URLs</h1>
+        <div className='mx-auto max-w-lg bg-purple-100 my-16 p-8 rounded-lg flex flex-col gap-4'>
+            <h1 className='font-bold text-2xl'>Generate your short URLs</h1>
             <div className='flex flex-col gap-2'>
-                <input
-                    type="text"
+                <input type="text"
                     value={url}
-                    className='px-4 py-2 focus:outline-purple-600 rounded-md bg-white'
+                    className='px-4 py-2 bg-white focus:outline-purple-600 rounded-md'
                     placeholder='Enter your URL'
-                    onChange={(e) => setUrl(e.target.value)}
-                />
-                <input
-                    type="text"
+                    onChange={e => { seturl(e.target.value) }} />
+
+                <input type="text"
                     value={shorturl}
-                    className='px-4 py-2 focus:outline-purple-600 rounded-md bg-white'
+                    className='px-4 py-2 bg-white focus:outline-purple-600 rounded-md'
                     placeholder='Enter your preferred short URL text'
-                    onChange={(e) => setShorturl(e.target.value)}
-                />
+                    onChange={e => { setshorturl(e.target.value) }} />
+
+                {/* ✅ Button now disables and changes style/text while generating */}
                 <button
                     onClick={generate}
-                    className='bg-purple-500 rounded-lg shadow-lg p-3 py-1 my-3 font-bold text-white'
+                    disabled={isGenerating}
+                    className={`rounded-lg shadow-lg p-3 py-1 my-3 font-bold text-white 
+                        ${isGenerating ? 'bg-purple-300 cursor-not-allowed' : 'bg-purple-500 hover:bg-purple-600'}`}
                 >
-                    Generate
+                    {isGenerating ? 'Generating...' : 'Generate'}
                 </button>
             </div>
 
-            {generated && (
-                <>
-                    <span className='font-bold text-lg'>Your Link</span>
-                    <code>
-                        <Link target="_blank" href={generated}>
-                            {generated}
-                        </Link>
-                    </code>
-                </>
-            )}
+            {generated && <>
+                <span className='font-bold text-lg'>Your Link </span>
+                <code><Link target="_blank" href={generated}>{generated}</Link></code>
+            </>}
         </div>
     )
 }
